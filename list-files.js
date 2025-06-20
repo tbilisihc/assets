@@ -1,19 +1,12 @@
-// --- CONFIGURATION ---
-// 1. Your GitHub username
-const GITHUB_USERNAME = "tbilisihc";
 
-// 2. Your repository name
-const GITHUB_REPONAME = "assets";
 
-// 3. The path to the folder in your repository
-const FOLDER_PATH = "assets";
 // ---------------------
 
 // The element where the links will be inserted
 const fileListContainer = document.getElementById("file-links");
 
 // Construct the GitHub API URL
-const apiUrl = `https://api.github.com/repos/<span class="math-inline">\{GITHUB\_USERNAME\}/</span>{GITHUB_REPONAME}/contents/${FOLDER_PATH}`;
+const apiUrl = `https://api.github.com/repos/tbilisihc/assets/contents/assets`;
 
 // The base URL for the links on your GitHub Pages site
 const baseUrl = `https://tbilisi-hackclub.com/assets`;
