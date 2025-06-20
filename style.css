@@ -1,0 +1,89 @@
+/* --- General Body and Typography --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+    background-color: #f4f7f9;
+    color: #333;
+    margin: 0;
+    padding: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+}
+
+/* --- Main Container for the File List --- */
+.file-browser-container {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 800px;
+    padding: 2rem 2.5rem;
+    box-sizing: border-box; /* Ensures padding doesn't add to the width */
+    border: 1px solid #e9ecef;
+}
+
+/* --- Main Page Title --- */
+h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    color: #111;
+    margin-bottom: 0.5rem;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+}
+
+p.subtitle {
+    font-size: 1rem;
+    color: #6c757d;
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+/* --- Folder Headings (e.g., "logo", "icons") --- */
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #0056b3; /* A nice blue to distinguish folders */
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* --- File List (the <ul> element) --- */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* --- List Items (the <li> elements) --- */
+li {
+    padding: 0.75rem 0.5rem;
+    border-bottom: 1px solid #f1f3f5;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Last list item should not have a bottom border */
+li:last-child {
+    border-bottom: none;
+}
+
+/* --- File Links (the <a> elements) --- */
+a {
+    text-decoration: none;
+    color: #343a40;
+    font-weight: 500;
+    display: block; /* Makes the entire list item area clickable */
+    transition: color 0.2s ease-in-out;
+}
+
+/* --- Hover Effect for Links --- */
+li:hover {
+    background-color: #f8f9fa; /* Light background on list item hover */
+}
+
+a:hover {
+    color: #007bff; /* Link color changes on hover */
+}

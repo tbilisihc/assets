@@ -1,72 +1,105 @@
+// --- CONFIGURATION ---
+// 1. Your GitHub username
+const GITHUB_USERNAME = "tbilisihc";
 
+// 2. Your repository name
+const GITHUB_REPONAME = "assets";
 
+// 3. The path to the PARENT folder you want to scan for subfolders
+const ROOT_FOLDER_PATH = "assets";
 // ---------------------
 
 // The element where the links will be inserted
-const fileListContainer = document.getElementById("file-links");
+const container = document.getElementById("file-links");
 
-// Construct the GitHub API URL
-const apiUrl = `https://api.github.com/repos/tbilisihc/assets/contents/assets`;
+// The base URL for the file links on your GitHub Pages site
+const baseUrl = `https://tbilisi.hackclub.com/assets/`;
 
-// The base URL for the links on your GitHub Pages site
-const baseUrl = `https://tbilisi-hackclub.com/assets`;
+/**
+ * Fetches the contents of a specific folder from the GitHub API.
+ * @param {string} path - The path to the folder in the repository.
+ * @returns {Promise<Array>} A promise that resolves to an array of items in the folder.
+ */
+async function fetchFolderContents(path) {
+  const apiUrl = `https://api.github.com/repos/${GITHUB_USERNAME}/${GITHUB_REPONAME}/contents/${path}`;
+  const response = await fetch(apiUrl);
+  if (!response.ok) {
+    throw new Error(
+      `GitHub API request for ${path} failed: ${response.status} ${response.statusText}`
+    );
+  }
+  return await response.json();
+}
 
-// Function to fetch and display the file links
-async function listFiles() {
-  if (!fileListContainer) {
-    console.error("Error: The element with ID 'file-links' was not found.");
+/**
+ * The main function to discover folders and list files within them.
+ */
+async function listAllFiles() {
+  if (!container) {
+    console.error(
+      "Error: The container element with ID 'file-links' was not found."
+    );
     return;
   }
+  container.innerHTML = "<p>Loading file lists...</p>"; // Show a loading message
 
   try {
-    // Fetch the list of files from the GitHub API
-    const response = await fetch(apiUrl);
+    // 1. Get the list of all items (files and folders) in the root 'assets' directory
+    const rootItems = await fetchFolderContents(ROOT_FOLDER_PATH);
 
-    // Handle HTTP errors
-    if (!response.ok) {
-      throw new Error(
-        `GitHub API request failed: ${response.status} ${response.statusText}`
-      );
+    // 2. Filter that list to get only the directories
+    const subfolders = rootItems.filter((item) => item.type === "dir");
+
+    // Clear the loading message
+    container.innerHTML = "";
+
+    if (subfolders.length === 0) {
+      container.innerHTML = `<p>No subfolders found in the '${ROOT_FOLDER_PATH}' directory.</p>`;
+      return;
     }
 
-    const files = await response.json();
+    // 3. Loop through each subfolder and get its contents
+    for (const folder of subfolders) {
+      // Create a heading for the folder
+      const heading = document.createElement("h3");
+      heading.textContent = folder.name; // e.g., "logo" or "icons"
+      container.appendChild(heading);
 
-    // Create an unordered list to hold the links
-    const ul = document.createElement("ul");
+      // Fetch the files inside this specific subfolder
+      const files = await fetchFolderContents(folder.path);
 
-    // Loop through each item in the directory
-    for (const item of files) {
-      // We only want to list files, not sub-directories
-      if (item.type === "file") {
-        // Create the list item and the link
+      // Create a list for the files
+      const ul = document.createElement("ul");
+
+      const fileItems = files.filter((item) => item.type === "file");
+
+      if (fileItems.length === 0) {
         const li = document.createElement("li");
-        const a = document.createElement("a");
-
-        // The link text will be the filename (e.g., "image.png")
-        a.textContent = item.name;
-
-        // The link href will be the full URL to the file
-        // item.path gives the full path from the repo root (e.g., "assets/logo/image.png")
-        a.href = baseUrl + item.path;
-
-        // Open the link in a new tab
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-
-        li.appendChild(a);
+        li.textContent = "No files in this folder.";
         ul.appendChild(li);
-      }
-    }
+      } else {
+        // Loop through the files and create the links
+        for (const file of fileItems) {
+          const li = document.createElement("li");
+          const a = document.createElement("a");
 
-    // Clear any previous content and add the new list
-    fileListContainer.innerHTML = "";
-    fileListContainer.appendChild(ul);
+          a.textContent = file.name;
+          a.href = baseUrl + file.path; // The href is the full path from the repo root
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+
+          li.appendChild(a);
+          ul.appendChild(li);
+        }
+      }
+      container.appendChild(ul);
+    }
   } catch (error) {
-    console.error("Error fetching file list:", error);
-    fileListContainer.innerHTML =
+    console.error("Error during file discovery:", error);
+    container.innerHTML =
       "<p>Error loading file list. See console for details.</p>";
   }
 }
 
-// Run the function when the page loads
-listFiles();
+// Run the main function when the page loads
+listAllFiles();
